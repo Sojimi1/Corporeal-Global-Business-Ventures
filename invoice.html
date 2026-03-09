@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chicken Purchase Invoice Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #a3bace;
+      display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center; 
+   
+    }
+    .container{
+      box-shadow: 0 0 20px rgba(0, 0, 255, 0.6);
+      width: 40lvw;
+display:grid;
+  justify-content: center; /* horizontal center */
+  align-items: center; 
+    }
+      @media (max-width: 768px) 
+      {
+        .container{
+box-shadow: 0 0 20px rgba(0, 0, 255, 0.6);
+      width: 100%;
+display:grid;
+  justify-content: center; /* horizontal center */
+  align-items: center; 
+      }
+      }
+   
+    h1, h2, h3 {
+      text-align: center;
+      color: rgb(70, 70, 185);
+    }
+    label, select, input, textarea {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+      max-width: 500px;
+    }
+    textarea {
+      resize: vertical;
+      width: 80%;
+       
+      }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    .total {
+      text-align: right;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      background-color: #1a7ff1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    #btn1
+    {
+  display: inline-block;
+  justify-content: center; /* horizontal center */
+  align-items: center;
+  float: right; 
+    }
+    #invoice {
+      margin-top: 30px;
+    }
+    .print-buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .print-buttons button {
+      margin: 0 10px;
+    }
+    .item-group {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 10px;
+      max-width: 150px;
+    }
+    .customer-info {
+      margin: 20px 0;
+    }
+@media print {
+  #invoiceForm, .print-buttons {
+    display: none; /* Hide form and buttons when printing */
+  }
+  #invoice {
+    display: block; /* Ensure invoice is visible */
+  }
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+  <img src="logo.jpg" alt="Corporeal Global Logo" class="logo">
+  <h1>Corporeal Global Business Ventures</h1>
+  <h2>Invoice Generator - Pullet/Broiler Purchase</h2>
+
+  <form id="invoiceForm">
+    <div class="customer-info">
+      <label>Customer Name:</label>
+      <textarea id="customerName" rows="1" required></textarea>
+      <label>Customer Address:</label>
+      <textarea id="customerAddress" rows="2" required></textarea>
+      <label>Customer Phone Number:</label>
+      <textarea id="customerPhone" rows="1" required></textarea>
+    </div>
+
+    <div id="itemContainer">
+      <div class="item-group">
+       <label>Chicken Type:</label>
+<select class="type" required>
+  <option value="Pullet">Pullet</option>
+  <option value="Broiler">Broiler</option>
+</select>
+
+
+        <label>Sub-category (Age):</label>
+        <select class="age" required>
+          <option value="Point of Lay (18 weeks)">Point of Lay (18 weeks)</option>
+          <option value="Point of Cage (17 weeks)">Point of Cage (17 weeks)</option>
+           <option value="Point of Lay (16 weeks)">Point of Cage (16 weeks)</option>
+          <option value="Point of Cage (15 weeks)">Point of Cage (15 weeks)</option>
+           <option value="Point of Cage (14 weeks)">Point of Cage (14 weeks)</option>
+           <option value="Point of Lay (13 weeks)">Point of Cage (13 weeks)</option>
+          <option value="Point of Cage (12 weeks)">Point of Cage (12 weeks)</option>
+          <option value="Day Old Pullet">Day Old Pullet </option>
+          <option value="Day Old Broiler">Day Old Broiler </option>
+        </select>
+
+        <label>Quantity:</label>
+        <input type="number" class="quantity" min="1" required>
+
+        <label>Price per Chicken (₦):</label>
+        <input type="number" class="price" min="1" required>
+      </div>
+
+<div class="customer-info">
+  <label>Expected Collection Period:</label>
+  <input type="date" id="collectionDate" required>
+</div>
+
+    </div>
+    <button type="button" onclick="addItemGroup()">Add Another Item</button>
+    <button id="btn1" type="submit">Generate Invoice</button>
+  </form>
+
+  <div id="invoice" style="display: none;">
+   <div id="invoiceContent">
+   <!--<<img src="logo.jpg" alt="Corporeal Global Logo" class="logo">
+ h2>Corporeal Global Business Ventures</h2>-->
+  <p style="text-align: center;">Corporeal House, 5 Efujay Avenue Alaafia Quaters, Iperu Remo, Ogun State</p>
+  <p style="text-align: center;">08035566380 / 08159032690</p>
+<table>
+<tr> <td><p><strong>Customer Name:</strong> </td><td><span id="displayCustomerName"></span></p></td></tr> 
+<tr>   <td> <p><strong>Address:</strong> </td> <td><span id="displayCustomerAddress"></span></p></td> </tr> 
+  <td>  <p><strong>Phone:</strong> </td> <td><span id="displayCustomerPhone"></span></p></td> 
+</table>
+  <table>
+    <thead>
+      <tr>
+        <th>Chicken Type</th>
+        <th>Sub-category (Age)</th>
+        <th>Quantity</th>
+        <th>Price per Chicken (₦)</th>
+        <th>Total (₦)</th>
+      </tr>
+    </thead>
+    <tbody id="invoiceBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="total">Grand Total (₦)</td>
+        <td id="grandTotal"></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- ✅ Terms & Conditions must be inside invoiceContent -->
+  <div id="termsConditions" style="margin-top:20px;">
+    <h3>Terms and Conditions For The Transaction</h3>
+    <ol>
+      <li>Expected collection period: <span id="displayCollectionDate"></span></li>
+      <li>70% commitment deposit of the indicative Proforma cost must be made within Two (2) days of this indicative proforma invoice to confirm collection period. All payments must be completed before the collection date.</li>
+      <li>The above quoted indicative proforma price is tentative as it is subject to chnage before delivery</li>
+      <li>Delivery is from the hatchery in Oyo State to you or your representative(s). Please arrange for a means of transporting the pullets</li>
+      <li>Please confirm by signing this proforma and make deposit</li>
+      <li><b>Making payment into our Bnak Account confirms that you understand and agree to the above terms </b></li>
+      <li><b>This indicative proforma invoice is valid for 2 weeks</b></li>
+      <li>Our Account details are as follows</li>
+      <table>
+<tr> <td><p><strong>ACCOUNT NAME:</strong> </td><td>ACCOUNT NUMBER</td><td>BANK</td></tr> 
+<tr>   <td> <p><strong>CORPOREAL GLOBAL BUSINESS VENTURES LTD</strong> </td> <td>0119267935</td><td>STERLING</td> </tr> 
+</table>
+<p>Thank you in anticipation of your patronage </p>
+<p>Yours faithfully,</p>
+<img src="Signature.jpg" width="50px" height="50px"> 
+</br>
+<p>CORPOREAL GLOBAL BUSINESS VENTURES LTD</p>
+<p>SONAIKE GBOLAHAN</p>
+    </ol>
+  </div>
+</div>
+
+    </div>
+    <div class="print-buttons">
+      <button onclick="printInvoice()">Print as PDF</button>
+      <button onclick="downloadImage()">Download as JPG</button>
+
+
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+  const form = document.getElementById('invoiceForm');
+  const invoice = document.getElementById('invoice');
+  const invoiceBody = document.getElementById('invoiceBody');
+  const grandTotal = document.getElementById('grandTotal');
+  const itemContainer = document.getElementById('itemContainer');
+
+  const displayCustomerName = document.getElementById('displayCustomerName');
+  const displayCustomerAddress = document.getElementById('displayCustomerAddress');
+  const displayCustomerPhone = document.getElementById('displayCustomerPhone');
+  const displayCollectionDate = document.getElementById('displayCollectionDate');
+
+  function addItemGroup() {
+    const group = document.createElement('div');
+    group.className = 'item-group';
+    group.innerHTML = `
+      <label>Chicken Type:</label>
+      <input type="text" class="type" value="Pullet" readonly>
+
+      <label>Sub-category (Age):</label>
+      <select class="age" required>
+        <option value="Point of Lay (18 weeks)">Point of Lay (18 weeks)</option>
+        <option value="Point of Cage (16 weeks)">Point of Cage (16 weeks)</option>
+        <option value="Day Old Pullet">Day Old Pullet </option>
+        <option value="Day Old Broiler">Day Old Broiler </option>
+      </select>
+
+      <label>Quantity:</label>
+      <input type="number" class="quantity" min="1" required>
+
+      <label>Price per Chicken (₦):</label>
+      <input type="number" class="price" min="1" required>
+    `;
+    itemContainer.appendChild(group);
+  }
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    invoiceBody.innerHTML = '';
+    let totalAmount = 0;
+
+    const types = document.querySelectorAll('.type');
+    const ages = document.querySelectorAll('.age');
+    const quantities = document.querySelectorAll('.quantity');
+    const prices = document.querySelectorAll('.price');
+
+    const customerName = document.getElementById('customerName').value;
+    const customerAddress = document.getElementById('customerAddress').value;
+    const customerPhone = document.getElementById('customerPhone').value;
+    const collectionDate = document.getElementById('collectionDate').value;
+
+    displayCustomerName.textContent = customerName;
+    displayCustomerAddress.textContent = customerAddress;
+    displayCustomerPhone.textContent = customerPhone;
+    displayCollectionDate.textContent = collectionDate;
+
+    for (let i = 0; i < types.length; i++) {
+      const type = types[i].value;
+      const age = ages[i].value;
+      const quantity = parseInt(quantities[i].value);
+      const price = parseFloat(prices[i].value);
+      const itemTotal = quantity * price;
+
+      invoiceBody.innerHTML += `
+        <tr>
+          <td>${type}</td>
+          <td>${age}</td>
+          <td>${quantity}</td>
+          <td>₦${price.toLocaleString()}</td>
+          <td>₦${itemTotal.toLocaleString()}</td>
+        </tr>
+      `;
+
+      totalAmount += itemTotal;
+    }
+
+    grandTotal.textContent = `₦${totalAmount.toLocaleString()}`;
+    invoice.style.display = 'block';
+  });
+
+  function printInvoice() {
+    window.print();
+  }
+
+  function downloadImage() {
+    html2canvas(document.getElementById("invoiceContent")).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'invoice.jpg';
+      link.href = canvas.toDataURL('image/jpeg');
+      link.click();
+    });
+  }
+</script>
+
+  </div>
+</body>
+</html>
+
+
+<!--Below code is meant to generative random invoice number-->
+<!--<script>
+  const form = document.getElementById('invoiceForm');
+  const invoice = document.getElementById('invoice');
+  const invoiceBody = document.getElementById('invoiceBody');
+  const grandTotal = document.getElementById('grandTotal');
+  const itemContainer = document.getElementById('itemContainer');
+
+  const displayCustomerName = document.getElementById('displayCustomerName');
+  const displayCustomerAddress = document.getElementById('displayCustomerAddress');
+  const displayCustomerPhone = document.getElementById('displayCustomerPhone');
+  const displayCollectionDate = document.getElementById('displayCollectionDate');
+  const displayInvoiceNumber = document.getElementById('invoiceNumber');
+
+  // ✅ Function to generate invoice number
+  function generateInvoiceNumber() {
+    const today = new Date();
+    const datePart = today.toISOString().slice(0,10).replace(/-/g, ""); // e.g., 20250826
+    const randomPart = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+    return `INV-${datePart}-${randomPart}`;
+  }
+
+  // ✅ Load or generate invoice number
+  function getInvoiceNumber() {
+    let storedNumber = localStorage.getItem("invoiceNumber");
+    if (!storedNumber) {
+      storedNumber = generateInvoiceNumber();
+      localStorage.setItem("invoiceNumber", storedNumber);
+    }
+    return storedNumber;
+  }
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    invoiceBody.innerHTML = '';
+    let totalAmount = 0;
+
+    const types = document.querySelectorAll('.type');
+    const ages = document.querySelectorAll('.age');
+    const quantities = document.querySelectorAll('.quantity');
+    const prices = document.querySelectorAll('.price');
+
+    const customerName = document.getElementById('customerName').value;
+    const customerAddress = document.getElementById('customerAddress').value;
+    const customerPhone = document.getElementById('customerPhone').value;
+    const collectionDate = document.getElementById('collectionDate').value;
+
+    displayCustomerName.textContent = customerName;
+    displayCustomerAddress.textContent = customerAddress;
+    displayCustomerPhone.textContent = customerPhone;
+    displayCollectionDate.textContent = collectionDate;
+
+    // ✅ Set invoice number
+    const invoiceNo = getInvoiceNumber();
+    displayInvoiceNumber.textContent = invoiceNo;
+
+    for (let i = 0; i < types.length; i++) {
+      const type = types[i].value;
+      const age = ages[i].value;
+      const quantity = parseInt(quantities[i].value);
+      const price = parseFloat(prices[i].value);
+      const itemTotal = quantity * price;
+
+      invoiceBody.innerHTML += `
+        <tr>
+          <td>${type}</td>
+          <td>${age}</td>
+          <td>${quantity}</td>
+          <td>₦${price.toLocaleString()}</td>
+          <td>₦${itemTotal.toLocaleString()}</td>
+        </tr>
+      `;
+
+      totalAmount += itemTotal;
+    }
+
+    grandTotal.textContent = `₦${totalAmount.toLocaleString()}`;
+    invoice.style.display = 'block';
+  });
+
+  function printInvoice() {
+    window.print();
+  }
+
+  function downloadImage() {
+    html2canvas(document.getElementById("invoiceContent")).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'invoice.jpg';
+      link.href = canvas.toDataURL('image/jpeg');
+      link.click();
+    });
+  }
+</script>
+-->
